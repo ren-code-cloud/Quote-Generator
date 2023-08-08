@@ -6,35 +6,56 @@ const copyEl = document.querySelector('.copy');
 const authorEl = document.querySelector('.author');
 
 document.addEventListener('DOMContentLoaded', () => {
-  
   const quoteGenerator = async () => {
-    const response = await fetch('https://api.quotable.io/random');
-    const data = await response.json();
-    let textToType = await `✍️ ${data.content}`;
-    let dataText = await data.content;
-    authorEl.innerText = await `📝 ${data.author}`;
-    console.log(textToType);
-    let index = 0;
+  authorEl.textContent = '';
+  const dots = document.createElement('span');
+  dots.setAttribute("class", "typing-dots");
+  textElement.textContent = `Loading`;
+  textElement.appendChild(dots);
 
-    function typeText() {
-      if (index < textToType.length) {
-        textElement.textContent += textToType.charAt(index);
-        index++;
-        setTimeout(typeText, typingSpeed);
-      }
+  const response = await fetch('https://api.quotable.io/random');
+  const data = await response.json();
+  let quote = `✍️ ${data.content}`;
+  let author = `📝 ${data.author}`;
+  let textToType = `${quote}`;
+  console.log(quote);
+  console.log(author);
+
+
+  let index = 0;
+
+  function typeText() {
+    if (index < quote.length) {
+      textElement.textContent += quote.charAt(index);
+      index++;
+      setTimeout(typeText, typingSpeed);
+    } else if (index === quote.length) {
+      index++;
+      setTimeout(typeText, 1000);
+      authorEl.innerText = `${author}`
+    } else if (index > quote.length && index < textToType.length) {
+      textElement.textContent += textToType.charAt(index);
+      index++;
+      setTimeout(typeText, typingSpeed);
     }
+  }
   
-    textElement.textContent = ''; // Clear the previous quote
+  setTimeout(() => {
+    authorEl.textContent = '';
+    textElement.textContent = ''; // Clear the previous quote and author
     index = 0; // Reset the index
     typeText();
-  }
+  }, 3000); // Adjust the duration (in milliseconds) of the loading animation
+};
+
+
   soundEl.addEventListener('click', () => {
-    const textToCopy = textElement.textContent.trim().substring(1)
+    const textToCopy = textElement.textContent.trim().substring(1);
     const author = authorEl.textContent.trim().substring(1);
-    console.log(textToCopy)
+    console.log(textToCopy);
     const utterance = new SpeechSynthesisUtterance(`${textToCopy} by ${author}`);
     speechSynthesis.speak(utterance);
-  })
+  });
 
   const copyToClipboard = () => {
     const textToCopy = textElement.textContent.trim();
@@ -51,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   generateEl.addEventListener('click', () => {
     quoteGenerator();
-  })
+  });
 
   quoteGenerator(); // Generate initial quote on page load
 });
