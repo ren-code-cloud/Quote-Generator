@@ -65,6 +65,22 @@ h1 {
   text-align: center;
   position: relative;
 }
+.typing-dots::after {
+  content: "";
+  display: inline-block;
+  animation: typing 1.5s infinite;
+}
+@keyframes typing {
+  0%, 100% {content: "";}
+  25% {content: "."}
+  50% {content: ".."}
+  75% {content: "..."}
+}
+.author {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
 .typing-animation {
   font-size: clamp(1.2rem, 4vw, 24px);
   white-space: wrap;
@@ -82,11 +98,7 @@ h4 {
   text-align: center;
   margin: .5em 0;
 }
-.author {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-}
+
 .social-media a {
   display: inline-flex;
   justify-content: center;
